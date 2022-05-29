@@ -1,0 +1,17 @@
+.btn-group {
+    margin-top: 20px;
+}
+
+@media (max-width: 767px) {
+    .btn-group {
+        margin-top: 10px;
+        flex-direction: column;
+        width: 100%;
+        .btn {
+            margin-bottom: 10px;
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}

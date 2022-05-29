@@ -1,5 +1,5 @@
 
-import './app-filter.css';
+import './app-filter.scss';
 
 const AppFilter = ({filter, onFilterSelect}) => {
     const buttonsData = [

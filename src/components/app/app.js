@@ -34,7 +34,7 @@ class App extends Component{
     addItem = (name, salary) => {
         const newItem = {
             name,
-            salary,
+            salary: +salary,
             increase: false,
             rise: false,
             id: this.maxId++
@@ -83,9 +83,14 @@ class App extends Component{
     }
 
     filterPost = (items, filter) => {
+        const msg = (
+            <div>
+                There are no such employees
+            </div>
+        )
         switch (filter) {
             case 'rise':
-                return items.filter(item => item.rise);
+                return items.length > 0 ? items.filter(item => item.rise) : {msg};
             case 'moreThen1000': 
                 return items.filter(item => item.salary > 1000);
             default: 
@@ -102,12 +107,14 @@ class App extends Component{
         const employees = data.length;
         const increased = data.filter(item => item.increase).length;
         const visibleData = this.filterPost(this.searchEmp(data, term), filter);
+        const totalSalary = data.length >= 1 ? data.map(emp => emp.salary).reduce((acc, cur) => +acc + +cur) : 0;
 
         return (
             <div className="app">
                 <AppInfo
                     employees={employees}
-                    increased={increased}/>
+                    increased={increased}
+                    totalSalary={totalSalary}/>
     
                 <div className="search-panel">
                     <SearchPanel 
