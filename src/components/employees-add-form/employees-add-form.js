@@ -13,21 +13,19 @@ class EmployeesAddForm extends Component {
 
     onValueChange = (e) => {
         this.setState({
-            [e.target.name] : e.target.value
+            [e.target.name] : e.target.name === 'name' ? e.target.value.replace(/\d/, '') : e.target.value
         })
     }
     
     onSubmit = (e) => {
         e.preventDefault();
         if (this.state.name.length > 2 && this.state.salary) {
-
             this.props.onAdd(this.state.name, this.state.salary);
             this.setState({
                 name: '',
                 salary: ''
             })
         }
-        
     }
 
     render() {

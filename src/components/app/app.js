@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import EmployeeService from '../../services/EmployeeService';
 
 import AppInfo from '../app-info/app-info';
 import SearchPanel from '../search-panel/search-panel';
@@ -12,15 +13,31 @@ class App extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            data: [
-                {name: 'Khalek I.', salary: 800, increase: true, rise: false, id: 1},
-                {name: 'Eughen V.', salary: 1500, increase: true, rise: false, id: 2},
-                {name: 'Denis P.', salary: 1300, increase: false, rise: true, id: 3}
-            ],
+            data: [],
             term: '',
             filter: 'all'
         };
-        this.maxId = 4;
+        this.maxId = 10;
+    }
+
+    employeeService = new EmployeeService();
+
+    componentDidMount() {
+        this.dataFirebase();
+    }
+
+    componentDidUpdate() {
+        this.employeeService.putData(this.state.data)
+    }
+
+    dataFirebase = () => {
+        this.employeeService.getEmpData()
+            .then(data => {
+                this.setState(({
+                    data :Object.values(data)
+                }))
+            })
+        
     }
 
     deleteItem = (id) => {
@@ -29,16 +46,19 @@ class App extends Component{
                 data: data.filter(item => item.id !== id)
             }
         })
+        
     }
 
     addItem = (name, salary) => {
+        const {data} = this.state;
         const newItem = {
             name,
             salary: +salary,
             increase: false,
             rise: false,
-            id: this.maxId++
+            id: data[data.length - 1].id + 1
         };
+        this.employeeService.postData(newItem);
         this.setState(({data}) => {
             return {
                 data: [...data, newItem]
@@ -58,10 +78,11 @@ class App extends Component{
     }
 
     onChangeSalary = (id, salaryChanged) => {
+        salaryChanged = salaryChanged.replace(/\D/, '');
         this.setState(({data}) => ({
             data: data.map(item => {
                 if (item.id === id) {
-                    return {...item, salary: `${salaryChanged.replace(/\D/, '')}`}
+                    return {...item, salary: `${salaryChanged}`}
                 }
                 return item
             })
@@ -92,7 +113,7 @@ class App extends Component{
             case 'rise':
                 return items.length > 0 ? items.filter(item => item.rise) : {msg};
             case 'moreThen1000': 
-                return items.filter(item => item.salary > 1000);
+                return items.filter(item => item.salary > 999);
             default: 
                 return items;
         }

@@ -4,7 +4,6 @@ import './employees-list.css';
 
 const EmployeesList = ({data, onDelete, onToggleProp, onChangeSalary}) => {
 
-    console.log(data);
     const elements = data.length > 0 ? data.map(item => {
         const {id, ...itemProps} = item;
         return (
