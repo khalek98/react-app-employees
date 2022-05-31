@@ -15,9 +15,10 @@ class App extends Component{
         this.state = {
             data: [],
             term: '',
-            filter: 'all'
+            filter: 'all',
+            salaryFilter: 1000
         };
-        this.maxId = 10;
+        this.maxId = 10;    
     }
 
     employeeService = new EmployeeService();
@@ -27,7 +28,7 @@ class App extends Component{
     }
 
     componentDidUpdate() {
-        this.employeeService.putData(this.state.data)
+        this.employeeService.putData(this.state.data);
     }
 
     dataFirebase = () => {
@@ -56,7 +57,7 @@ class App extends Component{
             salary: +salary,
             increase: false,
             rise: false,
-            id: data[data.length - 1].id + 1
+            id: data.length === 0 ? 1 : data[data.length - 1].id + 1
         };
         this.employeeService.postData(newItem);
         this.setState(({data}) => {
@@ -78,7 +79,7 @@ class App extends Component{
     }
 
     onChangeSalary = (id, salaryChanged) => {
-        salaryChanged = salaryChanged.replace(/\D/, '');
+        // salaryChanged = salaryChanged.replace(/\D/, '');
         this.setState(({data}) => ({
             data: data.map(item => {
                 if (item.id === id) {
@@ -103,7 +104,12 @@ class App extends Component{
         this.setState({term});
     }
 
+    onChangeSalatyFilter = (salaryFilter) => {
+        this.setState({salaryFilter: +salaryFilter})
+    }
+
     filterPost = (items, filter) => {
+        const {salaryFilter} = this.state
         const msg = (
             <div>
                 There are no such employees
@@ -113,7 +119,7 @@ class App extends Component{
             case 'rise':
                 return items.length > 0 ? items.filter(item => item.rise) : {msg};
             case 'moreThen1000': 
-                return items.filter(item => item.salary > 999);
+                return items.filter(item => item.salary >= +salaryFilter);
             default: 
                 return items;
         }
@@ -124,7 +130,7 @@ class App extends Component{
     }
 
     render() {
-        const {data, term, filter} = this.state;
+        const {data, term, filter, salaryFilter} = this.state;
         const employees = data.length;
         const increased = data.filter(item => item.increase).length;
         const visibleData = this.filterPost(this.searchEmp(data, term), filter);
@@ -141,8 +147,10 @@ class App extends Component{
                     <SearchPanel 
                         onUpdateSearch={this.onUpdateSearch}/>
                     <AppFilter 
-                        filter={filter} 
-                        onFilterSelect={this.onFilterSelect}/>
+                        filter={filter}
+                        salaryFilter={salaryFilter}
+                        onFilterSelect={this.onFilterSelect}
+                        onChangeSalatyFilter={this.onChangeSalatyFilter}/>
                 </div>
     
                 <EmployeesList

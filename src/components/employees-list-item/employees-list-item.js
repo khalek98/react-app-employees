@@ -5,7 +5,10 @@ import './employees-list-item.scss';
 class EmployeesListItem extends Component {
     
     changeSalary = (e) => {
-        this.props.onChangeSalary(this.props.id, e.target.value);
+        const targetValue = +e.target.value.replace(/\D/g, '');
+        this.props.onChangeSalary(this.props.id, targetValue);
+        e.target.value = `${targetValue}$`;
+        
     }
     
     render() {
