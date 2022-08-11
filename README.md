@@ -1,6 +1,6 @@
 # Employees app
-My first React CRUD-app<br/>
-Link: [https://employees-react-app.herokuapp.com/](Employee App)
+My first React CRUD-app
+[Link to deployed app](https://employees-react-app.herokuapp.com/)
 
 This app has these opportunities:
 - Create new employee
